@@ -1,6 +1,9 @@
 #pragma once
 #include "Visitor.h"
+#include "VisitorsIncludes.h"
 #include <fstream>
+#include <map>
+#include <vector>
 
 class InterpreterVisitor: public Visitor{
 public:
@@ -21,12 +24,13 @@ public:
     virtual void Visit(UnaryOpExpression* expression) override;
 
     virtual void Visit(ArrayAssignment* assignment) override;
-    virtual void Visit(AssertStatement* assignment) override;
+    virtual void Visit(AssertStatement* statement) override;
     virtual void Visit(FieldAssignment* assignment) override;
+    virtual void Visit(FieldArrayAssignment* assignment) override;
     virtual void Visit(IfStatement* statement) override;
     virtual void Visit(PrintStatement* statement) override;
     virtual void Visit(ReturnStatement* statement) override;
-    virtual void Visit(SimpleAssignment* statement) override;
+    virtual void Visit(SimpleAssignment* assignment) override;
     virtual void Visit(WhileStatement* statement) override;
     virtual void Visit(StatementList* list) override;
 
@@ -43,4 +47,17 @@ public:
     virtual void Visit(VoidType* type) override;
 
 private:
+    int current_value_{0};
+    std::map<std::string, int> variables_;
+    std::map<std::string, std::vector<int>> array_variables_; // только одномерные массивы?
+    void SetCurrentValue(int value);
+    int GetCurrentValue() const;
+};
+
+enum TYPE{
+    TYPE_INT,
+    TYPE_BOOL,
+    TYPE_VOID,
+    TYPE_ARRAY_OF_INT,
+    TYPE_ARRAY_OF_BOOL,
 };

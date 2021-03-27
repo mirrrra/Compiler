@@ -20,6 +20,7 @@ class Statement;
 class ArrayAssignment;
 class AssertStatement;
 class FieldAssignment;
+class FieldArrayAssignment;
 class IfStatement;
 class PrintStatement;
 class ReturnStatement;

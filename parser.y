@@ -30,6 +30,7 @@
     class ArrayAssignment;
     class AssertStatement;
     class FieldAssignment;
+    class FieldArrayAssignment;
     class IfStatement;
     class PrintStatement;
     class ReturnStatement;
@@ -273,7 +274,8 @@ expression_seq:
 assignment:
     "id" "=" expression { $$ = new SimpleAssignment($1, $3); }
     | "id" "[" expression "]" "=" expression { $$ = new ArrayAssignment($1, $3, $6); }
-    | field_invocation "=" expression { $$ = new FieldAssignment($1, $3); };
+    | "this" "." "id" "=" expression { $$ = new FieldAssignment($3, $5); }
+    | "this" "." "id" "[" expression "]" "=" expression { $$ = new FieldArrayAssignment($3, $5, $8); };
 
 expression:
     binary_expression { $$ = $1; }
