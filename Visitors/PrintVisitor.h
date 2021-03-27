@@ -2,6 +2,7 @@
 #include "Visitor.h"
 #include <fstream>
 #include <string>
+#include "VisitorsIncludes.h"
 
 class PrintVisitor: public Visitor{
 public:

@@ -54,6 +54,7 @@ void PrintVisitor::Visit(MethodCall *method_call) {
     PrintTabs();
     stream_ << "MethodCall: " << method_call->id_ << "in class " << method_call->where_;
     if (method_call->args_) {
+        PrintTabs();
         stream_ << "with args: " << std::endl;
         num_tabs_++;
         method_call->args_.value()->Accept(this);
@@ -101,8 +102,12 @@ void PrintVisitor::Visit(ArrayAssignment *assignment) {
     PrintTabs();
     stream_ << "ArrayAssignment: " << assignment->id_ << std::endl;
     ++num_tabs_;
+
+    PrintTabs();
     stream_ << "index: " << std::endl;
     assignment->index_->Accept(this);
+
+    PrintTabs();
     stream_ << "value: " << std::endl;
     assignment->value_->Accept(this);
     --num_tabs_;
@@ -129,9 +134,11 @@ void PrintVisitor::Visit(IfStatement *statement) {
     stream_ << "IfStatement: " << std::endl;
     ++num_tabs_;
     statement->condition_->Accept(this);
+    PrintTabs();
     stream_ << "Then: " << std::endl;
     statement->then_actions_->Accept(this);
     if (statement->else_actions_) {
+        PrintTabs();
         stream_ << "Else: " << std::endl;
         statement->else_actions_.value()->Accept(this);
     }
@@ -186,6 +193,7 @@ void PrintVisitor::Visit(ClassDeclaration *decl) {
     PrintTabs();
     stream_ << "ClassDeclaration: " << decl->id_;
     if (decl->parent_id_) {
+        PrintTabs();
         stream_ << "extends " << decl->parent_id_.value();
     }
     stream_ << std::endl;
@@ -233,6 +241,7 @@ void PrintVisitor::Visit(MethodDeclaration *decl) {
     decl->type_->Accept(this);
     num_tabs_--;
     if (decl->declarations_) {
+        PrintTabs();
         stream_ << "with args: " << std::endl;
         num_tabs_++;
         decl->declarations_.value()->Accept(this);
