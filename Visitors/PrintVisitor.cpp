@@ -52,10 +52,9 @@ void PrintVisitor::Visit(LenExpression *expression) {
 
 void PrintVisitor::Visit(MethodCall *method_call) {
     PrintTabs();
-    stream_ << "MethodCall: " << method_call->id_ << "in class " << method_call->where_;
+    stream_ << "MethodCall: " << method_call->id_ << " In class: " << method_call->where_;
     if (method_call->args_) {
-        PrintTabs();
-        stream_ << "with args: " << std::endl;
+        stream_ << " With args: " << std::endl;
         num_tabs_++;
         method_call->args_.value()->Accept(this);
         num_tabs_--;
@@ -92,7 +91,7 @@ void PrintVisitor::Visit(BinaryOpExpression *expression) {
 
 void PrintVisitor::Visit(UnaryOpExpression *expression) {
     PrintTabs();
-    stream_ << "UnaryOpExpression: " << "operator " << expression->op_ << std::endl;
+    stream_ << "UnaryOpExpression: " << " Operator: " << expression->op_ << std::endl;
     ++num_tabs_;
     expression->first_->Accept(this);
     --num_tabs_;
@@ -104,11 +103,11 @@ void PrintVisitor::Visit(ArrayAssignment *assignment) {
     ++num_tabs_;
 
     PrintTabs();
-    stream_ << "index: " << std::endl;
+    stream_ << "Index: " << std::endl;
     assignment->index_->Accept(this);
 
     PrintTabs();
-    stream_ << "value: " << std::endl;
+    stream_ << "Value: " << std::endl;
     assignment->value_->Accept(this);
     --num_tabs_;
 }
@@ -194,7 +193,7 @@ void PrintVisitor::Visit(ClassDeclaration *decl) {
     stream_ << "ClassDeclaration: " << decl->id_;
     if (decl->parent_id_) {
         PrintTabs();
-        stream_ << "extends " << decl->parent_id_.value();
+        stream_ << " Extends: " << decl->parent_id_.value();
     }
     stream_ << std::endl;
 
@@ -236,13 +235,13 @@ void PrintVisitor::Visit(MainClassDeclaration *decl) {
 
 void PrintVisitor::Visit(MethodDeclaration *decl) {
     PrintTabs();
-    stream_ << "MethodDeclaration: " << decl->id_ << "with return type  ";
+    stream_ << "MethodDeclaration: " << decl->id_ << " With return type: " << std::endl;
     num_tabs_++;
     decl->type_->Accept(this);
     num_tabs_--;
     if (decl->declarations_) {
         PrintTabs();
-        stream_ << "with args: " << std::endl;
+        stream_ << " With args: " << std::endl;
         num_tabs_++;
         decl->declarations_.value()->Accept(this);
         num_tabs_--;
@@ -255,7 +254,7 @@ void PrintVisitor::Visit(MethodDeclaration *decl) {
 
 void PrintVisitor::Visit(VarDeclaration *decl) {
     PrintTabs();
-    stream_ << "VarDeclaration: " << decl->id_ << "with type  ";
+    stream_ << "VarDeclaration: " << decl->id_ << " With type:  " << std::endl;
     num_tabs_++;
     decl->type_->Accept(this);
     num_tabs_--;
