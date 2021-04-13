@@ -1,0 +1,27 @@
+class SquareTest {
+  public static void main () {
+	int n;
+	int a;
+	int b;
+	int c;
+	n = 30;
+	a = 1;
+	while(a <= n) {
+		b = 1;
+		while (b <= n) {
+			c = 1;
+			while(c <= n) {
+		        if (a * a + b * b == c * c) {
+    		        System.out.println (a);
+                    System.out.println (b);
+                    System.out.println (c);
+                    System.out.println ();
+                }
+		        c = c + 1;
+			}
+			b = b + 1;
+		}
+    a = a + 1;
+	}
+  }
+}

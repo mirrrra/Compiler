@@ -1,0 +1,32 @@
+class TreeTest{
+    public static void main() {
+        int number;
+        number = 0;
+        while (number < 200) {
+            if (number % 13 == 0) {
+                assert(number % 13 == 0);
+                System.out.println(number);
+            }
+            number = number + 1;
+        }
+
+        int left;
+        int right;
+        int middle;
+        int answer;
+
+        left = 0;
+        right = 100;
+        answer = 33;
+        while (left + 1 < right) {
+            middle = (left + right) / 2;
+            if (answer < middle) {
+                right = middle;
+            } else {
+                left = middle;
+            }
+        }
+        System.out.println(left);
+        System.out.println(right);
+    }
+}

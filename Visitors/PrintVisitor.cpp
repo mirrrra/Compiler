@@ -162,7 +162,9 @@ void PrintVisitor::Visit(PrintStatement *statement) {
     PrintTabs();
     stream_ << "PrintStatement: " << std::endl;
     ++num_tabs_;
-    statement->print_value_->Accept(this);
+    if (statement->print_value_) {
+        statement->print_value_.value()->Accept(this);
+    }
     --num_tabs_;
 }
 

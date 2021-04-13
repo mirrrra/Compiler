@@ -20,7 +20,7 @@ void InterpreterVisitor::Visit(ArrayIdExpression *expression) {
     expression->index_->Accept(this);
 
     int value = GetCurrentValue();
-    assert(array_variables_[expression->id_].size() <= value);
+    assert(array_variables_[expression->id_].size() > value);
     SetCurrentValue(array_variables_[expression->id_][value]);
 }
 
@@ -47,7 +47,11 @@ void InterpreterVisitor::Visit(NewExpression *expression) {
 }
 
 void InterpreterVisitor::Visit(ArrayNewExpression *expression) {
-    // do nothing
+    assert(array_variables_.find(expression->id_) != array_variables_.end());
+
+    expression->len_expr_->Accept(this);
+    int current_size = GetCurrentValue();
+    array_variables_[expression->id_].resize(current_size);
 }
 
 void InterpreterVisitor::Visit(BinaryOpExpression *expression) {
@@ -69,8 +73,17 @@ void InterpreterVisitor::Visit(BinaryOpExpression *expression) {
         case '>':
             first_value = first_value > second_value;
             break;
+        case '{':
+            first_value = first_value <= second_value;
+            break;
+        case '}':
+            first_value = first_value >= second_value;
+            break;
         case '=':
             first_value = first_value == second_value;
+            break;
+        case '!':
+            first_value = first_value != second_value;
             break;
         case '+':
             first_value = first_value + second_value;
@@ -102,7 +115,7 @@ void InterpreterVisitor::Visit(ArrayAssignment *assignment) {
 
     assignment->index_->Accept(this);
     int index = GetCurrentValue();
-    assert(array_variables_[assignment->id_].size() <= index);
+    assert(array_variables_[assignment->id_].size() > index);
 
     assignment->value_->Accept(this);
     int value = GetCurrentValue();
@@ -145,8 +158,11 @@ void InterpreterVisitor::Visit(IfStatement *statement) {
 }
 
 void InterpreterVisitor::Visit(PrintStatement *statement) {
-    statement->print_value_->Accept(this);
-    std::cout << GetCurrentValue() << std::endl;
+    if (statement->print_value_) {
+        statement->print_value_.value()->Accept(this);
+        std::cout << GetCurrentValue();
+    }
+    std::cout << std::endl;
 }
 
 void InterpreterVisitor::Visit(ReturnStatement *statement) {

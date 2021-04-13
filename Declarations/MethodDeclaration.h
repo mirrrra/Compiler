@@ -10,21 +10,19 @@
 class MethodDeclaration: public Declaration{
 public:
     MethodDeclaration(
-            Driver* driver,
             Type* type,
             const std::string& id,
             DeclarationList* declarations,
             StatementList* actions
             )
-        : driver_(driver), type_(type), id_(id), declarations_(declarations), actions_(actions) {}
+        : type_(type), id_(id), declarations_(declarations), actions_(actions) {}
 
-    MethodDeclaration(Driver* driver, Type* type, const std::string& id, StatementList* actions)
-            : driver_(driver), type_(type), id_(id), actions_(actions) {}
+    MethodDeclaration(Type* type, const std::string& id, StatementList* actions)
+            : type_(type), id_(id), actions_(actions) {}
     virtual void Accept(Visitor* visitor) override;
 
     Type* type_;
     std::string id_;
     Optional<DeclarationList*> declarations_;
     StatementList* actions_;
-    Driver* driver_;
 };
