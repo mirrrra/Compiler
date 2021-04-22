@@ -97,17 +97,37 @@ set(
         VISITOR_SOURCES
         Visitors/InterpreterVisitor.cpp
         Visitors/PrintVisitor.cpp
+        Visitors/SymbolTreeVisitor.cpp
+)
+
+set(
+        EXTRA_SOURCES
+        Sources/Optional.cpp
+        Sources/Table.cpp
+        Sources/Symbol.cpp
+)
+
+set(
+        BASE_SOURCES
+        BaseElement/ArrayObject.cpp
+        BaseElement/BoolObject.cpp
+        BaseElement/ClassObject.cpp
+        BaseElement/FunctionObject.cpp
+        BaseElement/IntObject.cpp
+        BaseElement/Object.cpp
+        BaseElement/UninitObject.cpp
 )
 
 add_executable(
         Compiler
         main.cpp
         driver.cpp
-        Sources/Optional.cpp
         ${EXPR_SOURCES}
         ${STMT_SOURCES}
         ${DECL_SOURCES}
         ${VISITOR_SOURCES}
+        ${EXTRA_SOURCES}
+        ${BASE_SOURCES}
         ${BISON_MyParser_OUTPUTS}
         ${FLEX_MyScanner_OUTPUTS}
         program.cpp
