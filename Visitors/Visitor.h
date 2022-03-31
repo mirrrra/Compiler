@@ -19,6 +19,7 @@ public:
     virtual void Visit(ArrayAssignment* assignment) = 0;
     virtual void Visit(AssertStatement* assignment) = 0;
     virtual void Visit(FieldAssignment* assignment) = 0;
+    virtual void Visit(FieldArrayAssignment* assignment) = 0;
     virtual void Visit(IfStatement* statement) = 0;
     virtual void Visit(PrintStatement* statement) = 0;
     virtual void Visit(ReturnStatement* statement) = 0;

@@ -56,11 +56,14 @@ blank  [ \t\r]
 "]"        return yy::parser::make_SQUARE_RPAREN(loc);
 "{"        return yy::parser::make_CURLY_LPAREN(loc);
 "}"        return yy::parser::make_CURLY_RPAREN(loc);
+"!="       return yy::parser::make_NOTEQ (loc);
 "=="       return yy::parser::make_EQ(loc);
 "="        return yy::parser::make_ASSIGN (loc);
 ";"        return yy::parser::make_SEMICOLON(loc);
 ","        return yy::parser::make_COMMA(loc);
 "."        return yy::parser::make_POINT(loc);
+"<="       return yy::parser::make_LEQ(loc);
+">="       return yy::parser::make_GEQ(loc);
 "<"        return yy::parser::make_LE(loc);
 ">"        return yy::parser::make_GE(loc);
 "&&"       return yy::parser::make_AND(loc);

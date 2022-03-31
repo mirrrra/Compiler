@@ -1,0 +1,69 @@
+class MainClass {
+    public static void main () {
+        A a;
+        int return_code;
+        boolean bool_code;
+        return_code = a.Arrange(2, true);
+        bool_code = a.Allow();
+
+        B b;
+        b.Borrow(42);
+
+        C c;
+        bool_code = c.cmake();
+
+        D d;
+        d.draw();
+
+        System.out.println(0);
+    }
+}
+
+class A {
+    int application;
+    int address;
+
+    public int Arrange(int apple, boolean ace) {
+        return apple;
+    }
+
+    public boolean Allow() {
+        return false;
+    }
+}
+
+class B extends A {
+    int belonging;
+    public void Borrow(int butterfly) {
+        belonging = butterfly;
+    }
+
+    boolean Bair;
+    public void Build() {
+        Bair = true;
+    }
+}
+
+class C extends A {
+    boolean color;
+    boolean cmake;
+
+    public boolean Clear() {
+        return color == false;
+    }
+
+    public boolean Cmake() {
+        return cmake == true;
+    }
+}
+
+class D extends B {
+    public void draw() {
+        int id;
+        id = 0;
+        while (id < 15) {
+            System.out.println(id);
+            id = id + 1;
+        }
+    }
+}

@@ -1,0 +1,40 @@
+class ComputingTest {
+    public static void main () {
+        int SIZE;
+        SIZE = 10;
+        int[] array;
+        array = new int[SIZE];
+
+        int id;
+        id = 0;
+        while (id < SIZE) {
+            if (id == 0) {
+                array[id] = 0;
+            } else {
+                array[id] = array[id - 1] + id;
+            }
+            System.out.println(array[id]);
+            id = id + 1;
+        }
+        assert(array[9] == 45);
+
+        array[2] = array[5] * array[6];
+        array[1] = array[4] / array[3];
+        array[3] = array[8] % array[7];
+        array[0] = array[1] + array[2] + array[3];
+        assert(array[3] == 8);
+        assert(array[2] == 315);
+        assert(array[1] == 1);
+        assert(array[0] == 324);
+
+        array[0] = 0;
+        array[4] = 0;
+        array[8] = 0;
+
+        if (!array[0] && array[7] < array[2] || array[4] != array[9]) {
+            System.out.println(true);
+        } else {
+            System.out.println(false);
+        }
+    }
+}

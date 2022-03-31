@@ -1,6 +1,7 @@
 #include "driver.h"
 #include "parser.hh"
 #include "Visitors/PrintVisitor.h"
+#include "Visitors/InterpreterVisitor.h"
 
 Driver::Driver() :
         trace_parsing(false),
@@ -17,7 +18,9 @@ int Driver::parse(const std::string& f) {
     parser.set_debug_level(trace_parsing);
     int res = parser();
     PrintVisitor print_visitor("output.txt");
+    InterpreterVisitor interpreter;
     program->Accept(&print_visitor);
+    program->Accept(&interpreter);
     scan_end();
     return res;
 }

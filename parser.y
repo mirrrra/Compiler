@@ -30,6 +30,7 @@
     class ArrayAssignment;
     class AssertStatement;
     class FieldAssignment;
+    class FieldArrayAssignment;
     class IfStatement;
     class PrintStatement;
     class ReturnStatement;
@@ -128,7 +129,10 @@
     CURLY_RPAREN "}"
     LE "<"
     GE ">"
+    LEQ "<="
+    GEQ ">="
     EQ "=="
+    NOTEQ "!="
     AND "&&"
     OR "||"
     NOT "!"
@@ -196,11 +200,11 @@ class_declaration_seq:
 
 main_class:
     "class" "id" "{" "public" "static" "void" "main" "(" ")" "{" statements_seq "}" "}" {
-        $$ = new MainClassDeclaration(&driver, $2, $11); };
+        $$ = new MainClassDeclaration($2, $11); };
 
 class_declaration:
-    "class" "id" "{" declarations "}" { $$ = new ClassDeclaration(&driver, $2, $4); }
-    | "class" "id" "extends" "id" "{" declarations "}" { $$ = new ClassDeclaration(&driver, $2, $4, $6); };
+    "class" "id" "{" declarations "}" { $$ = new ClassDeclaration($2, $4); }
+    | "class" "id" "extends" "id" "{" declarations "}" { $$ = new ClassDeclaration($2, $4, $6); };
 
 declarations:
     declaration { $$ = new DeclarationList($1); }
@@ -211,18 +215,18 @@ declaration:
     | var_declaration { $$ = $1; };
 
 method_declaration:
-    "public" type "id"  "(" args ")" "{" statements_seq "}" { $$ = new MethodDeclaration(&driver, $2, $3, $5, $8); }
-    | "public" type "id"  "(" ")" "{" statements_seq "}" { $$ = new MethodDeclaration(&driver, $2, $3, $7); };
+    "public" type "id"  "(" args ")" "{" statements_seq "}" { $$ = new MethodDeclaration($2, $3, $5, $8); }
+    | "public" type "id"  "(" ")" "{" statements_seq "}" { $$ = new MethodDeclaration($2, $3, $7); };
 
 var_declaration:
-    type "id" ";" { $$ = new VarDeclaration(&driver, $1, $2); };
+    type "id" ";" { $$ = new VarDeclaration($1, $2); };
 
 args:
     arg { $$ = new DeclarationList($1); }
     | arg "," args { $3->push_front($1); $$ = $3; };
 
 arg:
-    type "id" { $$ = new VarDeclaration(&driver, $1, $2); };
+    type "id" { $$ = new VarDeclaration($1, $2); };
 
 type:
     simple_type { $$ = $1; }
@@ -238,7 +242,7 @@ array_type:
     simple_type "[" "]" { $$ = new ArrayType($1); };
 
 type_id:
-    "id" { $$ = new IdType(&driver, $1); };
+    "id" { $$ = new IdType($1); };
 
 statements_seq:
     %empty { $$ = new StatementList(); }
@@ -251,20 +255,21 @@ statement:
     | "if" "(" expression ")" statement { $$ = new IfStatement($3, $5); }
     | "if" "(" expression ")" statement "else" statement { $$ = new IfStatement($3, $5, $7); }
     | "while" "(" expression ")" statement { $$ = new WhileStatement($3, $5); }
+    | "print" "(" ")" ";" { $$ = new PrintStatement(); }
     | "print" "(" expression ")" ";" { $$ = new PrintStatement($3); }
     | assignment ";" { $$ = $1; }
     | "return" expression ";" { $$ = new ReturnStatement($2); }
     | method_invocation ";" { $$ = $1; };
 
 method_invocation:
-    "id" "." "id" "(" ")" { $$ = new MethodCall(&driver, $3, $1); }
-    | "id" "." "id" "(" expression_seq ")" { $$ = new MethodCall(&driver, $3, $1, $5); }
-    | "this" "." "id" "(" ")" { $$ = new MethodCall(&driver, $3, "this"); }
-    | "this" "." "id" "(" expression_seq ")" { $$ = new MethodCall(&driver, $3, "this", $5); };
+    "id" "." "id" "(" ")" { $$ = new MethodCall($3, $1); }
+    | "id" "." "id" "(" expression_seq ")" { $$ = new MethodCall($3, $1, $5); }
+    | "this" "." "id" "(" ")" { $$ = new MethodCall($3, "this"); }
+    | "this" "." "id" "(" expression_seq ")" { $$ = new MethodCall($3, "this", $5); };
 
 field_invocation:
-    "this" "." "id" { $$ = new IdExpression(&driver, $3, true); }
-    | "this" "." "id" "[" expression "]" { $$ = new ArrayIdExpression(&driver, $3, $5, true); };
+    "this" "." "id" { $$ = new IdExpression($3, true); }
+    | "this" "." "id" "[" expression "]" { $$ = new ArrayIdExpression($3, $5, true); };
 
 expression_seq:
     expression { $$ = new ExpressionList($1); }
@@ -273,17 +278,19 @@ expression_seq:
 assignment:
     "id" "=" expression { $$ = new SimpleAssignment($1, $3); }
     | "id" "[" expression "]" "=" expression { $$ = new ArrayAssignment($1, $3, $6); }
-    | field_invocation "=" expression { $$ = new FieldAssignment($1, $3); };
+    | "this" "." "id" "=" expression { $$ = new FieldAssignment($3, $5); }
+    | "this" "." "id" "[" expression "]" "=" expression { $$ = new FieldArrayAssignment($3, $5, $8); }
+    | "id" "=" "new" simple_type "[" expression "]" { $$ = new ArrayNewExpression($1, $4, $6); }
+    | "this" "." "id" "=" "new" simple_type "[" expression "]" { $$ = new ArrayNewExpression($3, $6, $8); }
 
 expression:
     binary_expression { $$ = $1; }
-    | "id" "[" expression "]" { $$ = new ArrayIdExpression(&driver, $1, $3, false); } // local array variable
-    | "id" "." "length" { $$ = new LenExpression(&driver, $1); }
-    | "new" simple_type "[" expression "]" { new ArrayNewExpression(&driver, $2, $4); } // это неявный declaration?
-    | "new" type_id "(" ")" { new NewExpression(&driver, $2); }                         // тоже неявный declaration? - пока ок
+    | "id" "[" expression "]" { $$ = new ArrayIdExpression($1, $3, false); } // local array variable
+    | "id" "." "length" { $$ = new LenExpression($1); }
+    | "new" type_id "(" ")" { new NewExpression($2); }
     | "!" expression { $$ = new UnaryOpExpression('!', $2); }
     | "(" expression ")" { $$ = $2; }
-    | "id" { $$ = new IdExpression(&driver, $1, false); } // local variable
+    | "id" { $$ = new IdExpression($1, false); } // local variable
     | "number" { $$ = new IntExpression($1); }
     | "true" { $$ = new BoolExpression(true); }
     | "false" { $$ = new BoolExpression(false); }
@@ -291,7 +298,7 @@ expression:
     | field_invocation { $$ = $1; };
 
 %left "&&" "||" "!";
-%left "<" ">" "==";
+%left "<" ">" "==" "<=" ">=" "!=";
 %left "+" "-";
 %left "*" "/" "%";
 
@@ -300,7 +307,10 @@ binary_expression:
     | expression "||" expression { $$ = new BinaryOpExpression('|', $1, $3); }
     | expression "<" expression { $$ = new BinaryOpExpression('<', $1, $3); }
     | expression ">" expression { $$ = new BinaryOpExpression('>', $1, $3); }
+    | expression "<=" expression { $$ = new BinaryOpExpression('{', $1, $3); }
+    | expression ">=" expression { $$ = new BinaryOpExpression('}', $1, $3); }
     | expression "==" expression { $$ = new BinaryOpExpression('=', $1, $3); }
+    | expression "!=" expression { $$ = new BinaryOpExpression('!', $1, $3); }
     | expression "+" expression { $$ = new BinaryOpExpression('+', $1, $3); }
     | expression "-" expression { $$ = new BinaryOpExpression('-', $1, $3); }
     | expression "*" expression { $$ = new BinaryOpExpression('*', $1, $3); }

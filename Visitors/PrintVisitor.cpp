@@ -128,6 +128,20 @@ void PrintVisitor::Visit(FieldAssignment *assignment) {
     --num_tabs_;
 }
 
+void PrintVisitor::Visit(FieldArrayAssignment *assignment) {
+    PrintTabs();
+    stream_ << "FieldArrayAssignment: " << assignment->id_ << std::endl;
+    ++num_tabs_;
+    PrintTabs();
+    stream_ << "Index: " << std::endl;
+    assignment->index_->Accept(this);
+
+    PrintTabs();
+    stream_ << "Value: " << std::endl;
+    assignment->value_->Accept(this);
+    --num_tabs_;
+}
+
 void PrintVisitor::Visit(IfStatement *statement) {
     PrintTabs();
     stream_ << "IfStatement: " << std::endl;
@@ -148,7 +162,9 @@ void PrintVisitor::Visit(PrintStatement *statement) {
     PrintTabs();
     stream_ << "PrintStatement: " << std::endl;
     ++num_tabs_;
-    statement->print_value_->Accept(this);
+    if (statement->print_value_) {
+        statement->print_value_.value()->Accept(this);
+    }
     --num_tabs_;
 }
 

@@ -1,0 +1,29 @@
+class PrimeTest {
+    public static void main () {
+	int num_of_primes;
+    num_of_primes = 10;
+	int len;
+	len = num_of_primes * num_of_primes;
+	boolean [] array;
+	array = new boolean [len];
+	int id;
+	id = 0;
+	while (id < len) {
+		array[id] = false;
+		id = id + 1;
+	}
+	id = 2;
+	int tmp;
+	while (id < len) {
+		if (array[id] == false) {
+    		System.out.println (id);
+			tmp = id * 2;
+			while(tmp < len) {
+				array[tmp] = true;
+				tmp = tmp + id;
+			}
+		}
+		id = id + 1;
+	}
+   }
+}

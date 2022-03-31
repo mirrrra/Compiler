@@ -25,6 +25,7 @@ public:
     virtual void Visit(ArrayAssignment* assignment) override;
     virtual void Visit(AssertStatement* statement) override;
     virtual void Visit(FieldAssignment* assignment) override;
+    virtual void Visit(FieldArrayAssignment* assignment) override;
     virtual void Visit(IfStatement* statement) override;
     virtual void Visit(PrintStatement* statement) override;
     virtual void Visit(ReturnStatement* statement) override;
